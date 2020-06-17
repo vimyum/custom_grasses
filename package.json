@@ -1,0 +1,22 @@
+{
+  "name": "grassCrop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.0.13",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/xml2js": "^0.4.5",
+    "axios": "^0.19.2",
+    "xml2js": "^0.4.23"
+  }
+}
