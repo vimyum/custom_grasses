@@ -42,7 +42,7 @@ type Rect = {
 		'data-date': string;
 	}
 }
-type Rects = {
+type Weeks = {
 	$: { transform: string };
 	rect: Rect[];
 }
@@ -53,10 +53,10 @@ type GrassSVG = {
  		class: string;
 		xmlns?: string;
 	};
-	g: Array<{
+	g: Array<{ // length is 1
 		$: any;
-		g: Rects[];
-	}>
+		g: Weeks[];
+	}>;
 	text?: any;
 }
 
@@ -70,6 +70,25 @@ const convertColor = (svg: GrassSVG, colorTheme: ColorThemes): GrassSVG => {
 		});
 		return rects;
 	});
+	return svg;
+}
+
+const trimWeek = (svg: GrassSVG, nweek: number): GrassSVG => {
+	const weekLength: number = svg.g[0].g.length;
+	console.log('%d, %d', weekLength, nweek)
+	const newWeeks: Weeks[] = svg.g[0].g.filter((_, idx)=> {
+		console.log('idx: %d, %o', idx, (idx > (weekLength - nweek)) );
+		return (idx >= (weekLength - nweek)) 
+	}).map((week, idx) => {
+		week.$.transform = `translate(${idx * 14}, 0)`;
+		week.rect = week.rect.map(rect => {
+			rect.$.x = `${14 - idx}`;
+			return rect;
+		});
+		return week;
+	});
+
+	svg.g[0].g = newWeeks;
 	return svg;
 }
 
@@ -101,6 +120,7 @@ const customizeSVG = (svg: any, params: Params) => {
 		dom.svg.$.xmlns = "http://www.w3.org/2000/svg";
 		console.log('%o', dom.svg)
 
+		trimWeek(<GrassSVG>dom.svg, 10)
 		convertColor(<GrassSVG>dom.svg, 'standard')
       	resolve(dom);
   	  });
