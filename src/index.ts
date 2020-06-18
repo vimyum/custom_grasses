@@ -2,6 +2,7 @@
 import * as xml2js from "xml2js";
 import axios from 'axios';
 import express from 'express'
+import { rejects } from "assert";
 
 const app: express.Express = express()
 
@@ -18,17 +19,57 @@ const colorThemes = Object.freeze({
 	"ocean": ["#121212", "#196127", "#239a3b", "#7bc96f", "#c6e48b"],
 });
 type ColorThemes = keyof typeof colorThemes;
-type colorConvertPair = { [key: string]: string }
-const colorConvertMap: colorConvertPair = {
+type colorConvertPair = { [key: string]: number }
+const colorIndexMap: colorConvertPair = {
 	// Low contribute
-	"#ebedf0": '0',
-	"#c6e48b": '1',
-	"#7bc96f": '2',
-	"#239a3b": '3',
-	"#196127": '4',
+	"#ebedf0": 0,
+	"#c6e48b": 1,
+	"#7bc96f": 2,
+	"#239a3b": 3,
+	"#196127": 4,
 	// High contribute
 }
-const convertColor = (svg: any, colorTheme: string): any => {
+
+type Rect = {
+	$: {
+		class: string;
+		width: string;
+		height: string;
+		x: string;
+		y: string;
+		fill: string;
+		'data-count': string; 
+		'data-date': string;
+	}
+}
+type Rects = {
+	$: { transform: string };
+	rect: Rect[];
+}
+type GrassSVG = {
+	$: {
+		width: string;
+ 		height: string;
+ 		class: string;
+		xmlns?: string;
+	};
+	g: Array<{
+		$: any;
+		g: Rects[];
+	}>
+	text?: any;
+}
+
+// Note: convertColor function is destructive.
+const convertColor = (svg: GrassSVG, colorTheme: ColorThemes): GrassSVG => {
+	svg.g[0].g = svg.g[0].g.map(rects => {
+		rects.rect.map(rect => {
+			const newColor = colorThemes[colorTheme][colorIndexMap[rect.$.fill]];
+			rect.$.fill = newColor;
+			return rect;
+		});
+		return rects;
+	});
 	return svg;
 }
 
@@ -44,10 +85,6 @@ const getParams = (req: express.Request): Params => {
 	return { username, weekPeriod, colortheme: <ColorThemes>colorThemeInput, needText };
 }
 
-const removeText = (svg: any) => {
-	//return svg.map(e => )
-}
-
 const customizeSVG = (svg: any, params: Params) => {
 	return new Promise((resolve, reject) => {
       xml2js.parseString(svg, (err, dom) => {
@@ -60,9 +97,11 @@ const customizeSVG = (svg: any, params: Params) => {
 		if (!params.needText) {
 			delete dom.svg.g[0].text
 		}
-
 		// add namespace as attribute
 		dom.svg.$.xmlns = "http://www.w3.org/2000/svg";
+		console.log('%o', dom.svg)
+
+		convertColor(<GrassSVG>dom.svg, 'standard')
       	resolve(dom);
   	  });
 	});
@@ -80,8 +119,9 @@ const handler = async (req: express.Request, res: express.Response) => {
 	const svgValidText = svgText.replace('/<svg', '/<svg xmlns="http:\/\/www.w3.org\/2000\/svg"');
 
 	// parse text to js DOM and Customize
-	const jsdom = await customizeSVG(svgValidText, params);
+	const jsdom: any = await customizeSVG(svgValidText, params);
 	const builder = new xml2js.Builder({headless: true});
+
 	const customizedSVG = builder.buildObject(jsdom);
 
 	res.set({
