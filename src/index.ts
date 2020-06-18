@@ -75,9 +75,7 @@ const convertColor = (svg: GrassSVG, colorTheme: ColorThemes): GrassSVG => {
 
 const trimWeek = (svg: GrassSVG, nweek: number): GrassSVG => {
 	const weekLength: number = svg.g[0].g.length;
-	console.log('%d, %d', weekLength, nweek)
 	const newWeeks: Weeks[] = svg.g[0].g.filter((_, idx)=> {
-		console.log('idx: %d, %o', idx, (idx > (weekLength - nweek)) );
 		return (idx >= (weekLength - nweek)) 
 	}).map((week, idx) => {
 		week.$.transform = `translate(${idx * 14}, 0)`;
@@ -92,6 +90,19 @@ const trimWeek = (svg: GrassSVG, nweek: number): GrassSVG => {
 	return svg;
 }
 
+const convert2Data = (svg: GrassSVG): GrassSVG => {
+	const data = svg.g[0].g.map((week, idx) => {
+		return week.rect.map(rect => {
+			return {
+				fill: rect.$.fill,
+				'data-date': rect.$['data-date'],
+				'data-count': rect.$['data-count'],
+			};
+		});
+	}).flat();
+	console.log('%o', data)
+	return svg;
+}
 const getParams = (req: express.Request): Params => {
 	const username: string = req.params.username;
 	const weekPeriod = Number(req.query.week) ? Number(req.query.week) : 0;
@@ -122,6 +133,7 @@ const customizeSVG = (svg: any, params: Params) => {
 
 		trimWeek(<GrassSVG>dom.svg, 10)
 		convertColor(<GrassSVG>dom.svg, 'standard')
+		convert2Data(dom.svg);
       	resolve(dom);
   	  });
 	});
