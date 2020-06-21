@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fmt": "prettier src/*.ts --write"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^14.0.13",
+    "prettier": "^2.0.5",
     "typescript": "^3.9.5"
   },
   "dependencies": {
@@ -20,5 +22,8 @@
     "axios": "^0.19.2",
     "express": "^4.17.1",
     "xml2js": "^0.4.23"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }
