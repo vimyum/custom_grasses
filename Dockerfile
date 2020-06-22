@@ -1,8 +1,12 @@
 FROM node:14-slim
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY tsconfig.json package*.json ./
+COPY src src
 
+RUN ls
+RUN ls src
 RUN npm install
-COPY ./dist .
+RUN npx tsc -p ./
+
 EXPOSE 3000
 CMD [ "node", "index.js" ]
