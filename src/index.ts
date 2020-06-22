@@ -191,7 +191,7 @@ app.use(function (req, res, next) {
   res.status(404).send('Sorry cant find that!');
 });
 
-app.listen(3000, () => {
+app.listen(8080, () => {
   console.log(
     'Github contribution graph customization app listening on port 3000!'
   );

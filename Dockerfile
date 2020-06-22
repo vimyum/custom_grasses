@@ -8,5 +8,5 @@ RUN ls src
 RUN npm install
 RUN npx tsc -p ./
 
-EXPOSE 3000
+EXPOSE 8080
 CMD [ "node", "index.js" ]
