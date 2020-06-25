@@ -9,4 +9,4 @@ RUN npm install
 RUN npx tsc -p ./
 
 EXPOSE 8080
-CMD [ "node", "index.js" ]
+CMD [ "npm", "start" ]

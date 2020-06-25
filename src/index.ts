@@ -191,8 +191,9 @@ app.use(function (req, res, next) {
   res.status(404).send('Sorry cant find that!');
 });
 
+const port = process.env.PORT || 8080;
 app.listen(8080, () => {
   console.log(
-    'Github contribution graph customization app listening on port 3000!'
+    `Github contribution graph customization app listening on port ${port}!`
   );
 });
