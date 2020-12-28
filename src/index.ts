@@ -24,10 +24,15 @@ type colorConvertPair = { [key: string]: number };
 const colorIndexMap: colorConvertPair = {
   // Low contribute
   '#ebedf0': 0,
-  '#c6e48b': 1,
-  '#7bc96f': 2,
-  '#239a3b': 3,
-  '#196127': 4,
+  '#9be9a8': 1, // '#c6e48b': 1,
+  '#40c463': 2, // '#7bc96f': 2,
+  '#30a14e': 3, // '#239a3b': 3,
+  '#216e39': 4, // '#196127': 4,
+  'var(--color-calendar-graph-day-bg)': 0,
+  'var(--color-calendar-graph-day-L1-bg)': 1,
+  'var(--color-calendar-graph-day-L2-bg)': 2,
+  'var(--color-calendar-graph-day-L3-bg)': 3,
+  'var(--color-calendar-graph-day-L4-bg)': 4,
   // High contribute
 };
 
